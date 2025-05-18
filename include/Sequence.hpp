@@ -1,7 +1,6 @@
 #pragma once
 
 #include <deque>
-#include <optional>
 #include <exception>
 
 template <typename T> class Sequence

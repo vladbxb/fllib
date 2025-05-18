@@ -1,8 +1,8 @@
 #pragma once
 
-#include <iostream>
-
 constexpr char LAMBDA = '\0';
+
+#include <iostream>
 
 class Symbol
 {

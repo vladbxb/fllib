@@ -14,7 +14,6 @@ class NFA : public Automaton
 public:
 	NFA(std::initializer_list<NFATransition> transitions, const State& initial, const States& accept);
 	NFA(const std::set<NFATransition>& transitions, const State& initial, const States& accept);
-	// NFA(const NFATransitions& transitions, const State& initial, const States& accept);
 
 	void tryLambda(const State& state, States& closure) const;
 	States calculateLambdaClosure(const State& state) const;
