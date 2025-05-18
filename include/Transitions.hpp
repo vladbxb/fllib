@@ -31,7 +31,10 @@ struct Transition
 
 	friend std::ostream& operator<<(std::ostream& os, const Transition<F, S, T>& transition)
 	{
-		os << transition.from << " --" << transition.symbol << "--> " << transition.to;
+		if (transition.symbol == Symbol::lambda())
+			os << transition.from << " --" << std::string("λ") << "--> " << transition.to;
+		else
+			os << transition.from << " --" << transition.symbol << "--> " << transition.to;
 		return os;
 	}
 };

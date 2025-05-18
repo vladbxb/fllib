@@ -9,7 +9,7 @@ void StateMapper::add(const States& states)
 		return;
 	std::string ID = getStringForID(currentID);
 	State newState(ID);
-	std::pair testPair = std::make_pair(states, newState);
+	std::pair<States, State> testPair = std::make_pair(states, newState);
 	IDs.insert(testPair);
 	definedResults.add(newState);
 	++currentID;

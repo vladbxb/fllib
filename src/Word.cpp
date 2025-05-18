@@ -1,5 +1,7 @@
 #include "Word.hpp"
 
+#include <exception>
+
 Word::Word(const std::string& symbols)
 {
 	std::string::const_iterator it;
@@ -17,8 +19,11 @@ Word::Word(const char* symbols, const size_t arrsize)
 	}
 }
 
-std::optional<Symbol> Word::processSymbol()
+Symbol Word::processSymbol()
 {
+	if (symbols.size() <= 0)
+		throw std::runtime_error("Cannot consume an empty word!");
+
 	return symbols.pop_front();
 }
 

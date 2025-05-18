@@ -222,16 +222,17 @@ AcceptCode NFA::accepts(Word word) const
 	}
 
 	States currentStates = calculateLambdaClosure({initial});
-	while (std::optional<Symbol> currentSymbol = word.processSymbol())
+	while (word.size() > 0)
 	{
+		Symbol currentSymbol = word.processSymbol();
 		bool transitionExists = false;
 		States nextStates;
 		States::const_iterator it;
 		for (it = currentStates.begin(); it != currentStates.end(); ++it)
 		{
-			if (!transitions.has(*it, *currentSymbol))
+			if (!transitions.has(*it, currentSymbol))
 				continue;
-			States nextState = transitions.get(*it, *currentSymbol);
+			States nextState = transitions.get(*it, currentSymbol);
 			nextStates.unite(nextState);
 			transitionExists = true;
 		}

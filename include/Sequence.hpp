@@ -2,6 +2,7 @@
 
 #include <deque>
 #include <optional>
+#include <exception>
 
 template <typename T> class Sequence
 {
@@ -17,7 +18,7 @@ public:
 
 	void push_back(const T& element);
 	bool contains(const T& element) const;
-	std::optional<T> pop_front();
+	T pop_front();
 	size_t size() const;
 private:
 	std::deque<T> sequence;
@@ -40,15 +41,13 @@ bool Sequence<T>::contains(const T& element) const
 }
 
 template <typename T>
-std::optional<T> Sequence<T>::pop_front()
+T Sequence<T>::pop_front()
 {
-	if (!sequence.empty())
-	{
-		T first = sequence.front();
-		sequence.pop_front();
-		return first;
-	}
-	return std::nullopt;
+	if (sequence.empty())
+		throw std::runtime_error("Cannot pop_front() an empty sequence!");
+	T first = sequence.front();
+	sequence.pop_front();
+	return first;
 }
 
 template <typename T>

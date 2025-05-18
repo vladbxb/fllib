@@ -12,7 +12,7 @@ class Word
 public:
 	Word(const std::string& symbols);
 	Word(const char* symbols, const size_t arrsize);
-	std::optional<Symbol> processSymbol();
+	Symbol processSymbol();
 	size_t size() const;
 	bool definedOver(const Alphabet& alphabet) const;
 

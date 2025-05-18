@@ -23,12 +23,13 @@ AcceptCode DFA::accepts(Word word) const
 	if (!word.definedOver(alphabet))
 		return AcceptCode::Abort;
 	State currentState = initial;
-	while (std::optional<Symbol> currentSymbol = word.processSymbol())
+	while (word.size() > 0)
 	{
-		std::optional<State> nextState = transitions.get(currentState, *currentSymbol);
-		if (!nextState)
+		Symbol currentSymbol = word.processSymbol();
+		if (!transitions.has(currentState, currentSymbol))
 			return AcceptCode::Abort;
-		currentState = *nextState;
+		State nextState = transitions.get(currentState, currentSymbol);
+		currentState = nextState;
 	}
 
 	if (accept.contains(currentState))
