@@ -65,29 +65,43 @@ void States::unite(States& other)
 	this->add(other);
 }
 
-std::string States::toName() const
+// std::string States::toName() const
+// {
+// 	// Concatenates the names of all the States in the set.
+// 	std::string compositeStateName;
+// 	States::const_iterator it;
+// 	for (it = states.begin(); it != states.end(); ++it)
+// 	{
+// 		compositeStateName.append(it->getName());
+// 	}
+// 	return compositeStateName;	
+// }
+
+std::string States::formatStates() const
 {
-	// Concatenates the names of all the States in the set.
-	std::string compositeStateName;
+	// Prettifies the state names inside accolades
+	std::string statesString = "{ ";
 	States::const_iterator it;
 	for (it = states.begin(); it != states.end(); ++it)
 	{
-		compositeStateName.append(it->getName());
+		States::const_iterator it2 = it;
+		++it2;
+		if (it2 == states.end())
+			statesString.append(std::string("\"") + it->getName() + std::string("\" "));
+		else
+			statesString.append(std::string("\"") + it->getName() + std::string("\", "));
 	}
-	return compositeStateName;	
+	statesString.append(std::string("}"));
+	return statesString;
 }
 
-State States::singleState() const
-{
-	return State(this->toName());
-}
+// State States::singleState() const
+// {
+// 	return State(this->toName());
+// }
 
 std::ostream& operator<<(std::ostream& os, const States& states)
 {
-	States::const_iterator it;
-	for (it = states.begin(); it != states.end(); ++it)
-	{
-		os << *it;
-	}
+	os << states.formatStates();
 	return os;
 }

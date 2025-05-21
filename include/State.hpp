@@ -10,7 +10,7 @@ public:
 	State(const std::string& name);
 	State(const char* name);
 	State(const State& s);
-	State(const States& s);
+	// State(const States& s);
 	std::string getName() const;
 
 	bool operator==(const State& other) const { return name == other.name; }

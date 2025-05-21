@@ -10,13 +10,13 @@
 class Word
 {
 public:
-	Word(const std::string& symbols);
-	Word(const char* symbols, const size_t arrsize);
+	Word(const std::string& symbols) : symbols(symbols) {}
+	Word(const char* symbols) : symbols(std::string(symbols)) {}
 	Symbol processSymbol();
 	size_t size() const;
 	bool definedOver(const Alphabet& alphabet) const;
 
 	friend std::ostream& operator<<(std::ostream& os, const Word& w);
 private:
-	Sequence<Symbol> symbols;
+	MutableSequence<Symbol> symbols;
 };	

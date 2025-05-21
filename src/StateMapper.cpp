@@ -15,6 +15,15 @@ void StateMapper::add(const States& states)
 	++currentID;
 }
 
+State StateMapper::reserveState()
+{
+	std::string ID = getStringForID(currentID);
+	State newState(ID);
+	definedResults.add(newState);
+	++currentID;
+	return newState;
+}
+
 bool StateMapper::has(const States& states) const
 {
 	return IDs.find(states) != IDs.end();

@@ -7,7 +7,7 @@
 State::State(const std::string& name) : name(name) {}
 State::State(const char* name) : name(name) {}
 State::State(const State& s) : name(s.name) {}
-State::State(const States& s) : name(s.toName()) {}
+// State::State(const States& s) : name(s.toName()) {}
 
 std::string State::getName() const
 {

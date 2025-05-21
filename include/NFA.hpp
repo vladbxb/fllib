@@ -9,16 +9,25 @@
 
 #include <iostream>
 
+struct NFAFragment
+{
+	NFATransitions transitions;
+	State initial;
+	States accept;
+};
+
+
 class NFA : public Automaton
 {
 public:
 	NFA(std::initializer_list<NFATransition> transitions, const State& initial, const States& accept);
 	NFA(const std::set<NFATransition>& transitions, const State& initial, const States& accept);
+	NFA(const NFATransitions& transitions, const State& initial, const States& accept);
+	NFA(const NFAFragment& fragment) : NFA(fragment.transitions, fragment.initial, fragment.accept) {}
 
 	void tryLambda(const State& state, States& closure) const;
 	States calculateLambdaClosure(const State& state) const;
 	States calculateLambdaClosure(const States& states) const;
-
 
 	NFA convertToRegularNFA() const;
 	DFA convertToDFA() const;
@@ -27,6 +36,10 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& os, const NFA& a)
 	{
+		os << "Defined states: " << a.states << '\n';
+		os << "Initial state: " << a.initial << '\n';
+		os << "Accept states: " << a.accept << '\n';
+		os << "Transition table:\n";
 		os << a.transitions;
 		return os;
 	}

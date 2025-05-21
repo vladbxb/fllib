@@ -15,10 +15,34 @@ NFA::NFA(const std::set<NFATransition>& transitions, const State& initial, const
 	std::set<NFATransition>::const_iterator trit;
 	for (trit = transitions.begin(); trit != transitions.end(); ++trit)
 	{
+		// State from = trit->first.first;
+		// Symbol symbol = trit->first.second;
+		// States to = trit->second;
 		states.add(trit->from);
 		// Add every resulting state to the NFA's states.
 		states.add(trit->to);
 		alphabet.add(trit->symbol);
+	}
+}
+
+NFA::NFA(const NFATransitions& transitions, const State& initial, const States& accept) : transitions(transitions), initial(initial), accept(accept)
+{
+	// Add initial and accepting states to the NFA's defined states.
+	states.add(initial);
+	States::const_iterator it;
+	for (it = accept.begin(); it != accept.end(); ++it)
+		states.add(*it);
+
+	NFATransitions::const_iterator trit;
+	for (trit = transitions.begin(); trit != transitions.end(); ++trit)
+	{
+		State from = trit->first.first;
+		Symbol symbol = trit->first.second;
+		States to = trit->second;
+		states.add(from);
+		// Add every resulting state to the NFA's states.
+		states.add(to);
+		alphabet.add(symbol);
 	}
 }
 

@@ -9,6 +9,7 @@ class StateMapper
 public:
 	StateMapper() : currentID(0) {}
 	void add(const States& states);
+	State reserveState();
 	bool has(const States& states) const;
 	State get(const States& states) const;	
 private:

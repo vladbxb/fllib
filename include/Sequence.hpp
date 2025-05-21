@@ -1,9 +1,12 @@
 #pragma once
 
+#include "Symbol.hpp"
+#include <string>
 #include <deque>
 #include <exception>
 
-template <typename T> class Sequence
+template <typename T>
+class Sequence
 {
 public:
 	using iterator = typename std::deque<T>::iterator;
@@ -15,18 +18,24 @@ public:
 	const_iterator begin() const { return sequence.begin(); }
 	const_iterator end() const { return sequence.end(); }
 
-	void push_back(const T& element);
+	template <typename U>
+	Sequence(const U& collection);
+
 	bool contains(const T& element) const;
-	T pop_front();
-	size_t size() const;
-private:
+	size_t size() const { return sequence.size(); }
+protected:
 	std::deque<T> sequence;
 };
 
 template <typename T>
-void Sequence<T>::push_back(const T& element)
+template <typename U>
+Sequence<T>::Sequence(const U& collection)
 {
-	sequence.push_back(element);
+	typename U::const_iterator it;
+	for (it = collection.begin(); it != collection.end(); ++it)
+	{
+		sequence.push_back(*it);
+	}
 }
 
 template <typename T>
@@ -39,18 +48,30 @@ bool Sequence<T>::contains(const T& element) const
 	return false;
 }
 
+
+
 template <typename T>
-T Sequence<T>::pop_front()
+class MutableSequence : public Sequence<T>
 {
-	if (sequence.empty())
-		throw std::runtime_error("Cannot pop_front() an empty sequence!");
-	T first = sequence.front();
-	sequence.pop_front();
-	return first;
+public:
+	template <typename U>
+	MutableSequence(const U& collection) : Sequence<T>(collection) {}
+	void push_back(const T& element);
+	T pop_front();
+};
+
+template <typename T>
+void MutableSequence<T>::push_back(const T& element)
+{
+	this->sequence.push_back(element);
 }
 
 template <typename T>
-size_t Sequence<T>::size() const
+T MutableSequence<T>::pop_front()
 {
-	return sequence.size();
+	if (this->sequence.empty())
+		throw std::runtime_error("Cannot pop_front() an empty sequence!");
+	T first = this->sequence.front();
+	this->sequence.pop_front();
+	return first;
 }

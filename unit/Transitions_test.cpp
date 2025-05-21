@@ -26,5 +26,9 @@ int main()
 	std::cout << stransitions;
 	std::cout << '\n';
 
+	// std::set<NFATransition> tests
+	std::set<NFATransitions> t;
+	NFATransition t1 = {"q0", Symbol::lambda(), {"q1"} };
+
 	return 0;
 }

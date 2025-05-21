@@ -33,14 +33,25 @@ public:
 	void intersect(States& other);
 	void unite(States& other);
 
-	std::string toName() const;
-	State singleState() const;
+	// std::string toName() const;
+	// State singleState() const;
+	std::string formatStates() const;
 
 	States& operator=(const States& other)
 	{
 		if (this != &other)
 			this->states = other.states;
 		return *this;
+	}
+
+	bool operator==(const States& other) const
+	{
+		return states == other.states;
+	}
+
+	bool operator!=(const States& other) const
+	{
+		return !(*this == other);
 	}
 
 	bool operator<(const States& other) const
