@@ -86,5 +86,7 @@ int main()
 
 	std::cout << d;
 
+	std::cout << "Converted to RegEx: " << a.convertToRegEx() << '\n';
+
 	return 0;
 }

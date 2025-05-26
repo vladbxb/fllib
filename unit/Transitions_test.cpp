@@ -16,17 +16,12 @@ int main()
 		{ "q1", 'b', {"q2"} }
 	};
 
-	SSCTransitions stransitions = SSCTransitions(ntransitions);
-
 	std::cout << "DFA transitions:\n";
 	std::cout << transitions;
 	std::cout << "\nNFA transitions\n";
 	std::cout << ntransitions;
-	std::cout << "\nSSC transitions\n";
-	std::cout << stransitions;
 	std::cout << '\n';
 
-	// std::set<NFATransition> tests
 	std::set<NFATransitions> t;
 	NFATransition t1 = {"q0", Symbol::lambda(), {"q1"} };
 

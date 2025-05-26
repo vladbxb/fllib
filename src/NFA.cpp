@@ -1,5 +1,7 @@
 #include "NFA.hpp"
 #include "StateMapper.hpp"
+#include "EFA.hpp"
+#include "RegEx.hpp"
 
 #include <queue>
 NFA::NFA(std::initializer_list<NFATransition> transitions, const State& initial, const States& accept) : NFA(std::set<NFATransition>(transitions), initial, accept) {}

@@ -7,6 +7,8 @@
 
 #include "DFA.hpp"
 
+class RegEx;
+
 #include <iostream>
 
 struct NFAFragment
@@ -29,6 +31,7 @@ public:
 	States calculateLambdaClosure(const State& state) const;
 	States calculateLambdaClosure(const States& states) const;
 
+	RegEx convertToRegEx() const;
 	NFA convertToRegularNFA() const;
 	DFA convertToDFA() const;
 
@@ -56,3 +59,15 @@ private:
 	States calculateNewAcceptStates(const States& definedStates) const;
 	std::set<States> calculateNewAcceptStates(const std::set<States>& definedStates) const;
 };
+
+#include "EFA.hpp"
+#include "RegEx.hpp"
+
+inline RegEx NFA::convertToRegEx() const
+{
+	EFA e(alphabet, states, initial, accept, transitions);
+	RegEx converted(e.toMutRegex());
+	converted.simplify();
+	return converted;
+}
+

@@ -6,6 +6,7 @@
 class Symbol
 {
 public:
+	static constexpr char VOID = '\n';
 	static constexpr char LAMBDA = '\0';
 	static constexpr char STAR = '*';
 	static constexpr char CONCAT = '.';
@@ -16,6 +17,7 @@ public:
 	Symbol(char symbol);
 	char getSymbol() const;
 
+	static Symbol _void() { return Symbol(VOID); }
 	static Symbol lambda() { return Symbol(LAMBDA); }
 	static Symbol star() { return Symbol(STAR); }
 	static Symbol concat() { return Symbol(CONCAT); }
@@ -36,6 +38,9 @@ public:
 	size_t getOpPrecedence() const;
 
 	bool operator<(const Symbol& other) const { return symbol < other.symbol; }
+	bool operator<=(const Symbol& other) const { return symbol <= other.symbol; }
+	bool operator>(const Symbol& other) const { return symbol > other.symbol; }
+	bool operator>=(const Symbol& other) const { return symbol >= other.symbol; }
 	bool operator==(const Symbol& other) const { return symbol == other.symbol; }
 	bool operator!=(const Symbol& other) const { return symbol != other.symbol; }
 

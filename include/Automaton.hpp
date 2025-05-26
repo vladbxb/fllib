@@ -35,3 +35,14 @@ public:
 		return "Error!";
 	}
 };
+
+// class OutputAutomaton
+// {
+// public:
+// 	virtual MutableSequence<Symbol> run(Word word) const = 0;
+// 	MutableSequence<Symbol> run(const std::string& s) const { return run(Word(s)); }
+// 	MutableSequence<Symbol> run(const char* s) const { return run(Word(s)); }
+// 	void test(const Word& word) const { std::cout << "Output for word \"" << word << "\" is: " << run(word) << '\n'; }
+// 	void test(const std::string& s) const { std::cout << "Output for word \"" << s << "\" is: " << run(s) << '\n'; }
+// 	void test(const char* s) const { std::cout << "Output for word \"" << std::string(s) << "\" is: " << run(s) << '\n'; }
+// };

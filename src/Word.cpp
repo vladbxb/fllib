@@ -7,7 +7,7 @@ Symbol Word::processSymbol()
 	if (symbols.size() <= 0)
 		throw std::runtime_error("Cannot consume an empty word!");
 
-	return symbols.pop_front();
+	return symbols.popFrontWithResult();
 }
 
 size_t Word::size() const

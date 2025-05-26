@@ -1,5 +1,6 @@
 #include "Symbol.hpp"
 
+#include <string>
 #include <cctype>
 #include <cassert>
 
@@ -12,7 +13,21 @@ char Symbol::getSymbol() const
 
 std::ostream& operator<<(std::ostream& os, const Symbol& s)
 {
-	os << s.symbol;
+	switch (s.symbol)
+	{
+		case Symbol::LAMBDA:
+			os << std::string("λ");
+			break;
+		case Symbol::CONCAT:
+			os << std::string("∙");
+			break;
+		case Symbol::VOID:
+			os << std::string("∅");
+			break;
+		default:
+			os << s.symbol;
+			break;
+	}
 	return os;
 }
 

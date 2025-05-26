@@ -1,104 +1,119 @@
 #include "RegEx.hpp"
 
+#include "expression.hpp"
+#include "RegExSyntaxTree.hpp"
+#include "NFA.hpp"
 #include <exception>
 #include <cassert>
 #include <iostream>
+#include <utility>
 #include <set>
 
-std::string RegExString::toString() const
+// NFA RegEx::toNFA() const
+// {
+// 	StateMapper namer;
+// 
+// 	RegExString convertedToString(convertToPostfix().toString());
+// 
+// 	if (convertedToString.size() == 0)
+// 	{
+// 		return std::make_unique<NFA>({}, "q0", {});
+// 	}
+// 
+// 	std::stack<NFAFragment> fragmentStack;
+// 	RegExString::const_iterator it;
+// 	for (it = convertedToString.begin(); it != convertedToString.end(); ++it)
+// 	{
+// 		if (it->isLiteral())
+// 			fragmentStack.push(buildFragment(*it, namer));
+// 		else
+// 		if (it->isUnaryOperator())
+// 		{
+// 			NFAFragment f = fragmentStack.top();
+// 			fragmentStack.pop();
+// 			fragmentStack.push(buildFragment(*it, f, namer));
+// 		}
+// 		else
+// 		if (it->isOperator())
+// 		{
+// 			NFAFragment f2 = fragmentStack.top();
+// 			fragmentStack.pop();
+// 			NFAFragment f1 = fragmentStack.top();
+// 			fragmentStack.pop();
+// 			fragmentStack.push(buildFragment(*it, f1, f2, namer));
+// 		}
+// 	}
+// 
+// 	NFAFragment result = fragmentStack.top();
+// 	fragmentStack.pop();
+// 
+// 	return NFA(result.transitions, result.initial, result.accept);
+// }	
+
+void RegEx::simplify()
 {
-	std::string result;
-	Sequence<Symbol>::const_iterator it;
-	for (it = string.begin(); it != string.end(); ++it)
+	switch (notation)
 	{
-		result.push_back(it->getSymbol());
+		case RegExNotation::Infix:
+		{
+			RegExSyntaxTree tree(toPostfix(expression.toString()));
+			std::string result = tree.stringifyRoot();
+			expression = RegExString(result);
+			break;
+		}
+		case RegExNotation::Postfix:
+		{
+			RegExSyntaxTree tree(expression.toString());
+			std::string result = tree.stringifyRoot();
+			expression = RegExString(result);
+			break;
+		}
 	}
-	return result;
 }
-
-NFA RegEx::toNFA() const
-{
-	StateMapper namer;
-
-	RegExString convertedToString(convertToPostfix().toString());
-
-	if (convertedToString.size() == 0)
-	{
-		return NFA({}, "q0", {});
-	}
-
-	std::stack<NFAFragment> fragmentStack;
-	RegExString::const_iterator it;
-	for (it = convertedToString.begin(); it != convertedToString.end(); ++it)
-	{
-		if (it->isLiteral())
-			fragmentStack.push(buildFragment(*it, namer));
-		else
-		if (it->isUnaryOperator())
-		{
-			NFAFragment f = fragmentStack.top();
-			fragmentStack.pop();
-			fragmentStack.push(buildFragment(*it, f, namer));
-		}
-		else
-		if (it->isOperator())
-		{
-			NFAFragment f2 = fragmentStack.top();
-			fragmentStack.pop();
-			NFAFragment f1 = fragmentStack.top();
-			fragmentStack.pop();
-			fragmentStack.push(buildFragment(*it, f1, f2, namer));
-		}
-	}
-
-	NFAFragment result = fragmentStack.top();
-	fragmentStack.pop();
-
-	return NFA(result.transitions, result.initial, result.accept);
-}	
 
 RegEx RegEx::convertToPostfix() const
 {
-	// Converting a regular expression to postfix notation using the Shunting-Yard algorithm
+	// // Converting a regular expression to postfix notation using the Shunting-Yard algorithm
 	if (notation == RegExNotation::Postfix)
 		return *this;
 
-	RegExString concatForm(addExplicitConcat());
+	// RegExString concatForm(addExplicitConcat());
 
 
-	std::queue<Symbol> output;
-	std::stack<Symbol> operators;
+	// std::queue<Symbol> output;
+	// std::stack<Symbol> operators;
 
-	RegExString::const_iterator it;
-	for (it = concatForm.begin(); it != concatForm.end(); ++it)
-	{
-		if (it->isLiteral())
-			handleLiteral(*it, output);
-		if (it->isOperator())
-			handleOperator(*it, output, operators);
-		if (it->isLeftParenthesis())
-			handleLeftParenthesis(*it, operators);
-		if (it->isRightParenthesis())
-			handleRightParenthesis(*it, operators, output);
-	}
+	// RegExString::const_iterator it;
+	// for (it = concatForm.begin(); it != concatForm.end(); ++it)
+	// {
+	// 	if (it->isLiteral())
+	// 		handleLiteral(*it, output);
+	// 	if (it->isOperator())
+	// 		handleOperator(*it, output, operators);
+	// 	if (it->isLeftParenthesis())
+	// 		handleLeftParenthesis(*it, operators);
+	// 	if (it->isRightParenthesis())
+	// 		handleRightParenthesis(*it, operators, output);
+	// }
 
 
-	while (!operators.empty())
-	{
-		if (operators.top().isLeftParenthesis())
-			throw std::runtime_error("Mismatched parentheses in regular expression!");
-		output.push(operators.top());
-		operators.pop();
-	}
+	// while (!operators.empty())
+	// {
+	// 	if (operators.top().isLeftParenthesis())
+	// 		throw std::runtime_error("Mismatched parentheses in regular expression!");
+	// 	output.push(operators.top());
+	// 	operators.pop();
+	// }
 
-	std::string outputResult;
-	while (!output.empty())
-	{
-		outputResult.push_back(output.front().getSymbol());
-		output.pop();
-	}
+	// std::string outputResult;
+	// while (!output.empty())
+	// {
+	// 	outputResult.push_back(output.front().getSymbol());
+	// 	output.pop();
+	// }
 
-	return RegEx(outputResult, RegExNotation::Postfix);
+	// return RegEx(outputResult, RegExNotation::Postfix);
+	return RegEx(toPostfix(expression.toString()), RegExNotation::Postfix);
 }
 
 NFAFragment RegEx::buildFragment(const Symbol& symbol, StateMapper& namer)
@@ -197,43 +212,50 @@ NFAFragment RegEx::buildFragment(const Symbol& symbol, const NFAFragment& f1, co
 
 std::string RegEx::addExplicitConcat() const
 {
-	if (notation != RegExNotation::Infix)
-		return expression.toString();
+	// if (notation != RegExNotation::Infix)
+	// 	return expression.toString();
 
-	if (expression.size() == 0)
-		return "";
-	else if (expression.size() == 1)
+	// if (expression.size() == 0)
+	// 	return "";
+	// else if (expression.size() == 1)
+	// {
+	// 	std::string result;
+	// 	Sequence<Symbol>::const_iterator it = expression.begin();
+	// 	result.push_back(it->getSymbol());
+	// 	return result;
+	// }
+
+	// std::string result;
+	// RegExString::const_iterator it1 = expression.begin();
+	// RegExString::const_iterator it2 = expression.begin() + 1;
+	// while (it2 != expression.end())
+	// {
+	// 	result.push_back(it1->getSymbol());
+	// 	if (needsConcat(*it1, *it2))
+	// 	{
+	// 		result.push_back(Symbol::CONCAT);
+	// 	}
+	// 	++it1;
+	// 	++it2;
+	// }
+	// result.push_back(it1->getSymbol());
+
+	// return result;
+	std::string infix;
+	Sequence<Symbol>::const_iterator it;
+	for (it = expression.begin(); it != expression.end(); ++it)
 	{
-		std::string result;
-		Sequence<Symbol>::const_iterator it = expression.begin();
-		result.push_back(it->getSymbol());
-		return result;
+		infix.push_back(it->getSymbol());
 	}
-
-	std::string result;
-	RegExString::const_iterator it1 = expression.begin();
-	RegExString::const_iterator it2 = expression.begin() + 1;
-	while (it2 != expression.end())
-	{
-		result.push_back(it1->getSymbol());
-		if (needsConcat(*it1, *it2))
-		{
-			result.push_back(Symbol::CONCAT);
-		}
-		++it1;
-		++it2;
-	}
-	result.push_back(it1->getSymbol());
-
-	return result;
+	return concatAll(infix);
 }
 
-bool RegEx::needsConcat(const Symbol& a, const Symbol& b) const
-{
-	bool a_req = a.isLiteral() || a.isStar() || a.isRightParenthesis();
-	bool b_req = b.isLiteral() || b.isLeftParenthesis();
-	return a_req && b_req;
-}
+// bool RegEx::needsConcat(const Symbol& a, const Symbol& b) const
+// {
+// 	bool a_req = a.isLiteral() || a.isStar() || a.isRightParenthesis();
+// 	bool b_req = b.isLiteral() || b.isLeftParenthesis();
+// 	return a_req && b_req;
+// }
 
 void RegEx::handleLiteral(const Symbol& current, std::queue<Symbol>& output) const
 {

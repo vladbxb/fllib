@@ -3,6 +3,7 @@
 #include "State.hpp"
 #include "States.hpp"
 #include "Symbol.hpp"
+#include "RegExString.hpp"
 #include <utility>
 #include <map>
 #include <optional>
@@ -41,17 +42,14 @@ struct Transition
 
 	friend std::ostream& operator<<(std::ostream& os, const Transition<F, S, T>& transition)
 	{
-		if (transition.symbol == Symbol::lambda())
-			os << transition.from << " --" << std::string("λ") << "--> " << transition.to;
-		else
-			os << transition.from << " --" << transition.symbol << "--> " << transition.to;
+		os << transition.from << " --" << transition.symbol << "--> " << transition.to;
 		return os;
 	}
 };
 
 using DFATransition = Transition<State, Symbol, State>;
 using NFATransition = Transition<State, Symbol, States>;
-using SSCTransition = Transition<States, Symbol, States>;
+using EFATransition = Transition<State, MutableRegExString, States>;
 
 template <typename F, typename S, typename T>
 class Transitions
@@ -67,6 +65,7 @@ public:
 	const_iterator begin() const { return transitions.begin(); }
 	const_iterator end() const { return transitions.end(); }
 
+	Transitions() = default;
 	Transitions(const std::set<Transition<F, S, T>>& transitions);
 	Transitions(const Transitions<F, S, T>& other);
 	Transitions(std::initializer_list<Transition<F, S, T>> transitions);
@@ -88,6 +87,9 @@ public:
 	void add(const std::set<Transition<F, S, T>>& transitions);
 	void add(const Transitions<F, S, T>& other);
 	void add(std::initializer_list<Transition<F, S, T>> transitions);
+	void erase(const Key& key);
+	void remove(const F& from, const S& symbol, const T& to);
+	void remove(const Transition<F, S, T>& transition);
 	bool has(const F& from, const S& symbol) const;
 	T get(const F& from, const S& symbol) const;
 
@@ -185,6 +187,28 @@ void Transitions<F, S, T>::add(std::initializer_list<Transition<F, S, T>> transi
 }
 
 template <typename F, typename S, typename T>
+void Transitions<F, S, T>::erase(const Key& key)
+{
+	transitions.erase(key);
+}
+
+template <typename F, typename S, typename T>
+void Transitions<F, S, T>::remove(const F& from, const S& symbol, const T& to)
+{
+	// Removes the 3-tuple from the internal map.
+	Key k = std::make_pair(from, symbol);
+	auto it = transitions.find(k);
+	if (it != transitions.end() && it->second == to)
+		transitions.erase(k);
+}
+
+template <typename F, typename S, typename T>
+void Transitions<F, S, T>::remove(const Transition<F, S, T>& transition)
+{
+	this->remove(transition.from, transition.symbol, transition.to);
+}
+
+template <typename F, typename S, typename T>
 bool Transitions<F, S, T>::has(const F& from, const S& symbol) const
 {
 	// Checks if the result of a key exists in the map.
@@ -217,6 +241,7 @@ public:
 	const_iterator begin() const { return transitions.begin(); }
 	const_iterator end() const { return transitions.end(); }
 
+	Transitions() = default;
 	Transitions(const std::set<Transition<F, S, States>>& transitions);
 	Transitions(const Transitions<F, S, States>& other);
 	Transitions(std::initializer_list<Transition<F, S, States>> transitions);
@@ -238,6 +263,8 @@ public:
 	void add(const std::set<Transition<F, S, States>>& transitions);
 	void add(const Transitions<F, S, States>& other);
 	void add(std::initializer_list<Transition<F, S, States>> transitions);
+	void erase(const Key& key);
+	void remove(const F& from, const S& symbol, const State& to);
 	bool has(const F& from, const S& symbol) const;
 	States get(const F& from, const S& symbol) const;
 
@@ -329,6 +356,25 @@ void Transitions<F, S, States>::add(std::initializer_list<Transition<F, S, State
 }
 
 template <typename F, typename S>
+void Transitions<F, S, States>::erase(const Key& key)
+{
+	transitions.erase(key);
+}
+
+template <typename F, typename S>
+void Transitions<F, S, States>::remove(const F& from, const S& symbol, const State& to)
+{
+	Key k = std::make_pair(from, symbol);
+	auto it = transitions.find(k);
+	if (it == transitions.end())
+	   return;
+
+	it->second.remove(to);
+	if (it->second.empty())
+		transitions.erase(k);
+}
+
+template <typename F, typename S>
 bool Transitions<F, S, States>::has(const F& from, const S& symbol) const
 {
 	// Checks if the result of a key exists in the map.
@@ -349,3 +395,4 @@ States Transitions<F, S, States>::get(const F& from, const S& symbol) const
 
 using DFATransitions = Transitions<State, Symbol, State>;
 using NFATransitions = Transitions<State, Symbol, States>;
+using EFATransitions = Transitions<State, MutableRegExString, States>;
