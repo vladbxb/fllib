@@ -1,3 +1,25 @@
+# Tema 3
+
+Scopul ultimei teme este utilizarea unor noțiuni mai avansate de OOP (principii SOLID, design patterns) și a programării
+generice.
+
+[//]: # (nitpick: ar fi mai corect să spunem șabloane de funcții și șabloane de clase; este abuz de limbaj)
+
+### Cerințe
+- [x] minim o funcție șablon și o clasă șablon (template) **(vedeti `include/Transitions.hpp`)**
+    - [x] modificați o clasă existentă care este ceva mai izolată de celelalte (să nu aveți foarte mult de modificat) și transformați-o în clasă template **(vedeti `include/StateSet.hpp`)**
+    - [x] adăugați (minim) un atribut de tip `T` sau care depinde de `T` **(vedeti `include/Transitions.hpp`)**
+    - [x] adăugați (minim) o funcție membru care să depindă de `T` (sau de alt parametru template); **(vedeti `include/Sequence.hpp`)**
+    - [x] adăugați (minim) o funcție normală/liberă template; poate să fie `friend` **(vedeti `include/Transitions.hpp`)**
+- [x] minim 2 design patterns (3 dacă aveți singleton sau ceva la fel de simplu și proiectul e simplu) **(vedeti mai jos ce design patterns au fost folosite)**
+- [x] **utilizarea acestor design patterns ar trebui să aibă sens**
+
+#### Design patterns folosite:
+1. **Iterator** - fiecare container care este wrapper in jurul unei primitive din STL are expusi iteratori.
+2. **Template Method** - clasa abstracta Automaton obliga clasele derivate sa respecte conventia de testare a cuvintelor in limbaj.
+3. **Interpreter** - clasa RegEx interpreteaza un sir de caractere ca o expresie matematica, o parseaza in reprezentarea interna si o poate evalua.
+4. **Factory** - metodele statice buildFragment(...) din clasa RegEx sunt un exemplu clasic de Factory methods.
+5. **Adapter** - clasa abstracta Transitions foloseste un ctor de conversie de la un alt tip, care transforma tranzitii la alte tipuri in interfata proprie.
 
 # Formal Language Library
 FLLib is an open source library for modelling various objects, principles and operations in the Theory of Computation. 
