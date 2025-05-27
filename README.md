@@ -15,20 +15,21 @@ In order to create a DFA which accepts the language `L = { w | w has an even num
 | q1  | q3 | q0 |
 | q2  | q0 | q3 |
 | q3  | q1 | q2 |
+
 After including `DFA.hpp`, one may construct a DFA object for this transition table like so:
 ```
 DFA dfa({
-			{"q0", '0', "q2"},
-			{"q0", '1', "q1"},
-			{"q1", '0', "q3"},
-			{"q1", '1', "q0"},
-			{"q2", '0', "q0"},
-			{"q2", '1', "q3"},
-			{"q3", '0', "q1"},
-			{"q3", '1', "q2"}
-	  },
-		"q0",
-		{"q1"}
+		{"q0", '0', "q2"},
+		{"q0", '1', "q1"},
+		{"q1", '0', "q3"},
+		{"q1", '1', "q0"},
+		{"q2", '0', "q0"},
+		{"q2", '1', "q3"},
+		{"q3", '0', "q1"},
+		{"q3", '1', "q2"}
+	},
+	"q0",
+	{"q1"}
 );
 ```
 Not bad, right? The good news is, the ctor can also take **sets** instead of initializer lists, so making a graphical interface should be easy enough.
@@ -50,6 +51,7 @@ In order to create an NFA which accepts the language `L = { w | w ends in the su
 | q2         | q4         |            |
 | q3 accept  |            |            |
 | q4 accept  |            |            |
+
 After including `NFA.hpp`, one may construct an NFA object for this transition table like so:
 ```
 NFA nfa({
@@ -57,9 +59,9 @@ NFA nfa({
 			{"q0", '1', {"q0", "q2"}},
 			{"q1", '1', {"q3"}},
 			{"q2", '0', {"q4"}}
-		},
-		"q0",
-		{"q3", "q4"}
+	},
+	"q0",
+	{"q3", "q4"}
 );
 ```
 #### How to use?
