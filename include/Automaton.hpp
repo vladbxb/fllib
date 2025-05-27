@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Word.hpp"
+#include "OutputSequence.hpp"
 #include <iostream>
 
 enum class AcceptCode
@@ -34,4 +35,16 @@ public:
 		}
 		return "Error!";
 	}
+};
+
+class OutputAutomaton
+{
+public:
+	virtual SymbolOutput run(Word word) const = 0;
+	SymbolOutput run(const std::string& s) const { return run(Word(s)); }
+	SymbolOutput run(const char* s) const { return run(Word(s)); }
+
+	void test(const Word& word) const { std::cout << "Output for word: " << word << " is: " << run(word) << '\n'; }
+	void test(const std::string& s) const { std::cout << "Output for word: " << s << " is: " << run(s) << '\n'; }
+	void test(const char* s) const { std::cout << "Output for word: " << s << " is: " << run(s) << '\n'; }
 };

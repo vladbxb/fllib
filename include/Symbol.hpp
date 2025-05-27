@@ -12,6 +12,7 @@ public:
 	static constexpr char UNION = '+';
 	static constexpr char LEFT_PARENTHESIS = '(';
 	static constexpr char RIGHT_PARENTHESIS = ')';
+	static constexpr char MOORE_SEP = '/';
 
 	Symbol(char symbol);
 	char getSymbol() const;
@@ -22,6 +23,7 @@ public:
 	static Symbol _union() { return Symbol(UNION); }
 	static Symbol leftParenthesis() { return Symbol(LEFT_PARENTHESIS); }
 	static Symbol rightParenthesis() { return Symbol(RIGHT_PARENTHESIS); }
+	static Symbol mooreSeparator() { return Symbol(MOORE_SEP); }
 	bool isLambda() const { return symbol == LAMBDA; }
 
 	bool isOperator() const;

@@ -18,6 +18,7 @@ public:
 	const_iterator begin() const { return sequence.begin(); }
 	const_iterator end() const { return sequence.end(); }
 
+	Sequence() = default;
 	template <typename U>
 	Sequence(const U& collection);
 
@@ -54,6 +55,7 @@ template <typename T>
 class MutableSequence : public Sequence<T>
 {
 public:
+	MutableSequence() = default;
 	template <typename U>
 	MutableSequence(const U& collection) : Sequence<T>(collection) {}
 	void push_back(const T& element);

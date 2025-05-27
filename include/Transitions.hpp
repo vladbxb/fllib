@@ -52,6 +52,7 @@ struct Transition
 using DFATransition = Transition<State, Symbol, State>;
 using NFATransition = Transition<State, Symbol, States>;
 using SSCTransition = Transition<States, Symbol, States>;
+using OutputTransition = Transition<State, Symbol, Symbol>;
 
 template <typename F, typename S, typename T>
 class Transitions
@@ -349,3 +350,4 @@ States Transitions<F, S, States>::get(const F& from, const S& symbol) const
 
 using DFATransitions = Transitions<State, Symbol, State>;
 using NFATransitions = Transitions<State, Symbol, States>;
+using OutputTransitions = Transitions<State, Symbol, Symbol>;

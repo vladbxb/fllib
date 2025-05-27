@@ -36,10 +36,10 @@ int main()
 	s2.add(State("q3"));
 	s1.add(State("q4"));
 
-	States s3 = s1.intersect(s2);
+	s1.intersect(s2);
 
 	set<State>::const_iterator it;
-	for (it = s3.begin(); it != s3.end(); ++it)
+	for (it = s1.begin(); it != s1.end(); ++it)
 	{
 		cout << it->getName() << '\n';
 	}
@@ -47,9 +47,9 @@ int main()
 	States s4 = {"q0", "q1", "q2", "q3"};
 	States s5 = {"q4", "q5", "q6", "q7"};
 
-	States s6 = s5.unite(s4);
+	s5.unite(s4);
 
-	cout << s6 << '\n';
+	cout << s5 << '\n';
 
 	cout << "All tests finalized!\n";
 	return 0;

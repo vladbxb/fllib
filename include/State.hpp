@@ -1,8 +1,7 @@
 #pragma once
 
 #include <string>
-
-class States;
+#include "Symbol.hpp"
 
 class State
 {
@@ -10,7 +9,6 @@ public:
 	State(const std::string& name);
 	State(const char* name);
 	State(const State& s);
-	// State(const States& s);
 	std::string getName() const;
 
 	bool operator==(const State& other) const { return name == other.name; }

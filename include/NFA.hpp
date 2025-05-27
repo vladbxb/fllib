@@ -34,13 +34,13 @@ public:
 
 	AcceptCode accepts(Word word) const override;
 
-	friend std::ostream& operator<<(std::ostream& os, const NFA& a)
+	friend std::ostream& operator<<(std::ostream& os, const NFA& nfa)
 	{
-		os << "Defined states: " << a.states << '\n';
-		os << "Initial state: " << a.initial << '\n';
-		os << "Accept states: " << a.accept << '\n';
+		os << "Defined states: " << nfa.states << '\n';
+		os << "Initial state: " << nfa.initial << '\n';
+		os << "Accept states: " << nfa.accept << '\n';
 		os << "Transition table:\n";
-		os << a.transitions;
+		os << nfa.transitions;
 		return os;
 	}
 private:

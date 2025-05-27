@@ -18,6 +18,10 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& os, const DFA& dfa)
 	{
+		os << "Defined states: " << dfa.states << '\n';
+		os << "Initial state: " << dfa.initial << '\n';
+		os << "Accept states: " << dfa.accept << '\n';
+		os << "Transition table:\n";
 		os << dfa.transitions;
 		return os;
 	}
