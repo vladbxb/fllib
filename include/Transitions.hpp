@@ -1,8 +1,11 @@
 #pragma once
 
+#include "StateSet.hpp"
 #include "State.hpp"
 #include "States.hpp"
 #include "Symbol.hpp"
+#include "PDAPair.hpp"
+#include "PDAPairs.hpp"
 #include <utility>
 #include <map>
 #include <optional>
@@ -53,6 +56,7 @@ using DFATransition = Transition<State, Symbol, State>;
 using NFATransition = Transition<State, Symbol, States>;
 using SSCTransition = Transition<States, Symbol, States>;
 using OutputTransition = Transition<State, Symbol, Symbol>;
+using PDATransition = Transition<PDAPair, Symbol, PDAPairs>;
 
 template <typename F, typename S, typename T>
 class Transitions
@@ -205,12 +209,12 @@ T Transitions<F, S, T>::get(const F& from, const S& symbol) const
 
 
 template <typename F, typename S>
-class Transitions<F, S, States>
+class Transitions<F, S, StateSet<F>>
 {
 public:
 	using Key = std::pair<F, S>;
-	using iterator = typename std::map<Key, States>::iterator;
-	using const_iterator = typename std::map<Key, States>::const_iterator;
+	using iterator = typename std::map<Key, StateSet<F>>::iterator;
+	using const_iterator = typename std::map<Key, StateSet<F>>::const_iterator;
 
 	iterator begin() { return transitions.begin(); }
 	iterator end() { return transitions.end(); }
@@ -218,9 +222,9 @@ public:
 	const_iterator begin() const { return transitions.begin(); }
 	const_iterator end() const { return transitions.end(); }
 
-	Transitions(const std::set<Transition<F, S, States>>& transitions);
-	Transitions(const Transitions<F, S, States>& other);
-	Transitions(std::initializer_list<Transition<F, S, States>> transitions);
+	Transitions(const std::set<Transition<F, S, StateSet<F>>>& transitions);
+	Transitions(const Transitions<F, S, StateSet<F>>& other);
+	Transitions(std::initializer_list<Transition<F, S, StateSet<F>>> transitions);
 
 	template <typename F2, typename S2, typename T2>
 	Transitions(const Transitions<F2, S2, T2>& other)
@@ -230,58 +234,58 @@ public:
 		for (it = other.begin(); it != other.end(); ++it)
 		{
 			// Cast each type for easy conversion
-			add(static_cast<F>(it->first.first), static_cast<S>(it->first.second), static_cast<States>(it->second));
+			add(static_cast<F>(it->first.first), static_cast<S>(it->first.second), static_cast<StateSet<F>>(it->second));
 		}
 	}
 
-	void add(const F& from, const S& symbol, const States& to);
-	void add(const Transition<F, S, States>& transition);
-	void add(const std::set<Transition<F, S, States>>& transitions);
-	void add(const Transitions<F, S, States>& other);
-	void add(std::initializer_list<Transition<F, S, States>> transitions);
+	void add(const F& from, const S& symbol, const StateSet<F>& to);
+	void add(const Transition<F, S, StateSet<F>>& transition);
+	void add(const std::set<Transition<F, S, StateSet<F>>>& transitions);
+	void add(const Transitions<F, S, StateSet<F>>& other);
+	void add(std::initializer_list<Transition<F, S, StateSet<F>>> transitions);
 	bool has(const F& from, const S& symbol) const;
-	States get(const F& from, const S& symbol) const;
+	StateSet<F> get(const F& from, const S& symbol) const;
 
-	friend std::ostream& operator<<(std::ostream& os, const Transitions<F, S, States>& transitions)
+	friend std::ostream& operator<<(std::ostream& os, const Transitions<F, S, StateSet<F>>& transitions)
 	{
-		Transitions<F, S, States>::const_iterator it;
+		Transitions<F, S, StateSet<F>>::const_iterator it;
 		for (it = transitions.begin(); it != transitions.end(); ++it)
 		{
 			F from = it->first.first;
 			S symbol = it->first.second;
-			States to = it->second;
-			Transition<F, S, States> currentTransition(from, symbol, to);
+			StateSet<F> to = it->second;
+			Transition<F, S, StateSet<F>> currentTransition(from, symbol, to);
 			os << currentTransition << '\n';
 		}
 		return os;
 	}
 			
 private:
-	std::map<Key, States> transitions;
+	std::map<Key, StateSet<F>> transitions;
 };
 
 template <typename F, typename S>
-Transitions<F, S, States>::Transitions(const std::set<Transition<F, S, States>>& transitions)
+Transitions<F, S, StateSet<F>>::Transitions(const std::set<Transition<F, S, StateSet<F>>>& transitions)
 {
 	// Builds the transition table based on a set of Transition objects.
 	this->add(transitions);
 }
 
 template <typename F, typename S>
-Transitions<F, S, States>::Transitions(const Transitions<F, S, States>& other)
+Transitions<F, S, StateSet<F>>::Transitions(const Transitions<F, S, StateSet<F>>& other)
 {
 	this->add(other);
 }
 
 template <typename F, typename S>
-Transitions<F, S, States>::Transitions(std::initializer_list<Transition<F, S, States>> transitions)
+Transitions<F, S, StateSet<F>>::Transitions(std::initializer_list<Transition<F, S, StateSet<F>>> transitions)
 {
 	// Builds the transition table based on an initializer list.
 	this->add(transitions);
 }
 
 template <typename F, typename S>
-void Transitions<F, S, States>::add(const F& from, const S& symbol, const States& to)
+void Transitions<F, S, StateSet<F>>::add(const F& from, const S& symbol, const StateSet<F>& to)
 {
 	// Adds a transition based on the 3 needed objects.
 	Key k = std::make_pair(from, symbol);
@@ -289,7 +293,7 @@ void Transitions<F, S, States>::add(const F& from, const S& symbol, const States
 }
 
 template <typename F, typename S>
-void Transitions<F, S, States>::add(const Transition<F, S, States>& transition)
+void Transitions<F, S, StateSet<F>>::add(const Transition<F, S, StateSet<F>>& transition)
 {
 	// Adds a transition based on a Transition object.
 	Key k = std::make_pair(transition.from, transition.symbol);
@@ -297,9 +301,9 @@ void Transitions<F, S, States>::add(const Transition<F, S, States>& transition)
 }
 
 template <typename F, typename S>
-void Transitions<F, S, States>::add(const std::set<Transition<F, S, States>>& transitions)
+void Transitions<F, S, StateSet<F>>::add(const std::set<Transition<F, S, StateSet<F>>>& transitions)
 {
-	typename std::set<Transition<F, S, States>>::const_iterator it;
+	typename std::set<Transition<F, S, StateSet<F>>>::const_iterator it;
 	for (it = transitions.begin(); it != transitions.end(); ++it)
 	{
 		this->add(*it);
@@ -307,22 +311,22 @@ void Transitions<F, S, States>::add(const std::set<Transition<F, S, States>>& tr
 }
 
 template <typename F, typename S>
-void Transitions<F, S, States>::add(const Transitions<F, S, States>& other)
+void Transitions<F, S, StateSet<F>>::add(const Transitions<F, S, StateSet<F>>& other)
 {
-	Transitions<F, S, States>::const_iterator it;
+	Transitions<F, S, StateSet<F>>::const_iterator it;
 	for (it = other.begin(); it != other.end(); ++it)
 	{
 		F from = it->first.first;
 		S symbol = it->first.second;
-		States to = it->second;
+		StateSet<F> to = it->second;
 		this->add(from, symbol, to);
 	}
 }
 
 template <typename F, typename S>
-void Transitions<F, S, States>::add(std::initializer_list<Transition<F, S, States>> transitions)
+void Transitions<F, S, StateSet<F>>::add(std::initializer_list<Transition<F, S, StateSet<F>>> transitions)
 {
-	typename std::initializer_list<Transition<F, S, States>>::const_iterator it;
+	typename std::initializer_list<Transition<F, S, StateSet<F>>>::const_iterator it;
 	for (it = transitions.begin(); it != transitions.end(); ++it)
 	{
 		this->add(it->from, it->symbol, it->to);
@@ -330,7 +334,7 @@ void Transitions<F, S, States>::add(std::initializer_list<Transition<F, S, State
 }
 
 template <typename F, typename S>
-bool Transitions<F, S, States>::has(const F& from, const S& symbol) const
+bool Transitions<F, S, StateSet<F>>::has(const F& from, const S& symbol) const
 {
 	// Checks if the result of a key exists in the map.
 	Key k = std::make_pair(from, symbol);
@@ -339,7 +343,7 @@ bool Transitions<F, S, States>::has(const F& from, const S& symbol) const
 }
 
 template <typename F, typename S>
-States Transitions<F, S, States>::get(const F& from, const S& symbol) const
+StateSet<F> Transitions<F, S, StateSet<F>>::get(const F& from, const S& symbol) const
 {
 	// Gets the result of the key pair in the map.
 	Key k = std::make_pair(from, symbol);
@@ -351,3 +355,4 @@ States Transitions<F, S, States>::get(const F& from, const S& symbol) const
 using DFATransitions = Transitions<State, Symbol, State>;
 using NFATransitions = Transitions<State, Symbol, States>;
 using OutputTransitions = Transitions<State, Symbol, Symbol>;
+using PDATransitions = Transitions<PDAPair, Symbol, PDAPairs>;

@@ -256,8 +256,8 @@ AcceptCode NFA::accepts(Word word) const
 		{
 			if (!transitions.has(*it, currentSymbol))
 				continue;
-			States nextState = transitions.get(*it, currentSymbol);
-			nextStates.unite(nextState);
+			States traversed = transitions.get(*it, currentSymbol);
+			nextStates.unite(traversed);
 			transitionExists = true;
 		}
 
