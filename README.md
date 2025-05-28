@@ -17,7 +17,7 @@ In order to create a DFA which accepts the language `L = { w | w has an even num
 | q3  | q1 | q2 |
 
 After including `DFA.hpp`, one may construct a DFA object for this transition table like so:
-```
+```cpp
 DFA dfa({
 		{"q0", '0', "q2"},
 		{"q0", '1', "q1"},
@@ -36,7 +36,7 @@ Not bad, right? The good news is, the ctor can also take **sets** instead of ini
 
 #### How to use?
 For testing strings, one may write:
-```
+```cpp
 dfa.test("00111"); // Accepted
 dfa.test("110"); // Denied
 ```
@@ -53,7 +53,7 @@ In order to create an NFA which accepts the language `L = { w | w ends in the su
 | q4 accept  |            |            |
 
 After including `NFA.hpp`, one may construct an NFA object for this transition table like so:
-```
+```cpp
 NFA nfa({
         {"q0", '0', {"q0", "q1"}},
         {"q0", '1', {"q0", "q2"}},
@@ -66,7 +66,7 @@ NFA nfa({
 ```
 #### How to use?
 For testing strings, one may write:
-```
+```cpp
 nfa.test("0001"); // Accepted
 nfa.test("11101010"); // Accepted
 nfa.test("000011000111"); // Denied
@@ -77,14 +77,14 @@ nfa.test("11100100"); // Denied
 The definition for this class can be found in `include/RegEx.hpp`. This class implements a regular expression purely for conversion to NFA. The most convenient way to use is by passing **a regular string**, along with **a notation type** as parameters.
 #### Example:
 In order to create a regular expression such as `ab*ab*a`, after including `RegEx.hpp`, since this is **infix notation**, we can write:
-```
+```cpp
 RegEx example("ab*ab*a", RegExNotation::Infix);
 ```
 in order to achieve this. Postfix notation is also supported by passing `RegExNotation::Postfix` as the second parameter.
 
 #### How to use?
 For testing strings, it is advised to create an NFA based on this regular expression, since making one-off tests meant creating an NFA at each request, which users may not want. In order to test, taking into account the above example, one may write:
-```
+```cpp
 NFA nfa = example.toNFA();
 nfa.test("aaba"); // Accepted
 nfa.test("abbbbabbba"); // Accepted
@@ -95,7 +95,7 @@ nfa.test("bbabaab"); // Denied
 The definition for this class can be found in `include/MooreMachine.hpp`. This class implements a classic Moore Machine (transducer). Usage is similar to the other automatons. The most convenient way to use is by passing **initializer lists** as arguments.
 #### Example
 In order to create a Moore machine, the process is very similar to the other automata. After including `MooreMachine.hpp`, an example of creating a MooreMachine object is the following:
-```
+```cpp
 MooreMachine a({
                     {"q0", '0', "q1"}, // input transitions
                     {"q0", '1', "q2"},
@@ -117,7 +117,7 @@ MooreMachine a({
 ```
 #### How to use?
 For testing, the user can write:
-```
+```cpp
 a.test("001101"); // This will output "ccbaab" to stdio.
 ```
 
@@ -125,7 +125,7 @@ a.test("001101"); // This will output "ccbaab" to stdio.
 The definition for this class can be found in `include/MealyMachine.hpp`. This class implements a classic Mealy Machine (transducer). Usage is similar to the other automatons. The most convenient way to use is by passing **initializer lists** as arguments.
 #### Example
 In order to create a Mealy machine, the process is very similar to the other automata. After including `MealyMachine.hpp`, an example of creating a MealyMachine object is the following:
-```
+```cpp
 MealyMachine a({
                  {"q0", '0', "q1"}, // input transitions
                  {"q0", '1', "q2"},
@@ -151,14 +151,14 @@ MealyMachine a({
 ```
 #### How to use?
 For testing, the user can write:
-```
+```cpp
 a.test("0111"); // This will output "acbb" to stdio.
 ```
 ### PDA (Pushdown Automata)
 The definition for PDA can be found at `include/PDA.hpp`. This class implements a non-deterministic pushdown automaton. The only recommended way of creating PDA objects is with **initializer lists**, even though the syntax is a bit tricky.
 #### Example
 For example, in order to create a PDA which accepts the language `L = { a^nb^n | n > 0 }`, you would need to construct a transition table, and that's a bit tedious to do. After including `PDA.hpp`, one may construct a PDA object like this:
-```
+```cpp
 PDA pda({
             { {"q0", 'Z'}, 'a', { {"q0", "AZ"} } }, // the triplet is on the left hand side
                                                     // state, stack symbol and then input symbol
@@ -175,7 +175,7 @@ PDA pda({
 ```
 #### How to use?
 In order to test the above PDA, one may write:
-```
+```cpp
 pda.test("aabb"); // Accepted
 pda.test("aaaabbbb"); // Accepted
 pda.test("aabaaabbbbb"); // Denied
@@ -183,6 +183,13 @@ pda.test("aabaaabbbbb"); // Denied
 
 ## Additional information
 The above examples can easily be accessed in the `demos/` folder from the git repository.
-
+### How to compile the demos?
+The demos can be compiled using CMake. After cloning the repository, for compiling the demos, one should execute these shell commands inside the root:
+```bash
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
 ## Credits
 Some of the examples above were taken from [GeeksForGeeks](https://www.geeksforgeeks.org) and [Tutorialspoint](https://www.tutorialspoint.com).
